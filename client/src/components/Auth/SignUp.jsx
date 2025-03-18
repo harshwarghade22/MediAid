@@ -1,29 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FaUser, FaEnvelope, FaLock, FaGoogle, FaFacebook, FaPhone } from 'react-icons/fa';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { clearErrors, register } from '../../actions/projectAction';
-import { toast } from 'react-toastify';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  FaUser,
+  FaEnvelope,
+  FaLock,
+  FaGoogle,
+  FaFacebook,
+  FaPhone,
+} from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { clearErrors, register } from "../../actions/projectAction";
+import { toast } from "react-toastify";
 
 const SignUp = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { loading, error, isAuthenticated } = useSelector((state) => state.auth);
+  const { error, isAuthenticated } = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
+    fullName: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
     agreeToTerms: false,
   });
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
 
     if (error) {
@@ -36,18 +43,19 @@ const SignUp = () => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      return toast.error('Passwords do not match');
+      return toast.error("Passwords do not match");
     }
 
     if (!formData.agreeToTerms) {
-      return toast.error('Please agree to the Terms and Conditions');
+      return toast.error("Please agree to the Terms and Conditions");
     }
 
     const userData = {
-      name: formData.fullName,
+      fullName: formData.fullName, // ✅ Corrected key
       email: formData.email,
       phone: formData.phone,
       password: formData.password,
+      confirmPassword: formData.confirmPassword,
     };
 
     dispatch(register(userData));
@@ -57,14 +65,21 @@ const SignUp = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white rounded-2xl shadow-xl p-8">
         <div className="text-center">
-          <h2 className="text-4xl font-extrabold text-gray-900 mb-2">Create Account</h2>
-          <p className="text-gray-600">Join us for better healthcare services</p>
+          <h2 className="text-4xl font-extrabold text-gray-900 mb-2">
+            Create Account
+          </h2>
+          <p className="text-gray-600">
+            Join us for better healthcare services
+          </p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="fullName"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Full Name
               </label>
               <div className="mt-1 relative">
@@ -79,13 +94,18 @@ const SignUp = () => {
                   className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                   placeholder="Enter your full name"
                   value={formData.fullName}
-                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, fullName: e.target.value })
+                  }
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email address
               </label>
               <div className="mt-1 relative">
@@ -100,13 +120,18 @@ const SignUp = () => {
                   className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                   placeholder="Enter your email"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="phone"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Phone Number
               </label>
               <div className="mt-1 relative">
@@ -121,13 +146,18 @@ const SignUp = () => {
                   className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                   placeholder="Enter your phone number"
                   value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Password
               </label>
               <div className="mt-1 relative">
@@ -142,13 +172,18 @@ const SignUp = () => {
                   className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                   placeholder="Create a password"
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Confirm Password
               </label>
               <div className="mt-1 relative">
@@ -163,7 +198,12 @@ const SignUp = () => {
                   className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                   placeholder="Confirm your password"
                   value={formData.confirmPassword}
-                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
                 />
               </div>
             </div>
@@ -176,10 +216,15 @@ const SignUp = () => {
               type="checkbox"
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               checked={formData.agreeToTerms}
-              onChange={(e) => setFormData({ ...formData, agreeToTerms: e.target.checked })}
+              onChange={(e) =>
+                setFormData({ ...formData, agreeToTerms: e.target.checked })
+              }
             />
-            <label htmlFor="agree-terms" className="ml-2 block text-sm text-gray-700">
-              I agree to the{' '}
+            <label
+              htmlFor="agree-terms"
+              className="ml-2 block text-sm text-gray-700"
+            >
+              I agree to the{" "}
               <Link to="/terms" className="text-blue-600 hover:text-blue-500">
                 Terms and Conditions
               </Link>
@@ -200,7 +245,9 @@ const SignUp = () => {
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or sign up with</span>
+              <span className="px-2 bg-white text-gray-500">
+                Or sign up with
+              </span>
             </div>
           </div>
 
@@ -223,8 +270,11 @@ const SignUp = () => {
         </form>
 
         <p className="mt-8 text-center text-sm text-gray-600">
-          Already have an account?{' '}
-          <Link to="/signin" className="font-medium text-blue-600 hover:text-blue-500">
+          Already have an account?{" "}
+          <Link
+            to="/signin"
+            className="font-medium text-blue-600 hover:text-blue-500"
+          >
             Sign in instead
           </Link>
         </p>
