@@ -11,6 +11,7 @@ import EmergencyContact from './components/Doctors/EmergencyContact';
 import TextChatPage from './components/Doctors/TextChatPage';
 import VideoChatPage from './components/Doctors/VideoChatPage';
 import PharmacyPage from './components/Pharmacy/pharmacy';
+import WalletPage from './components/WalletPage';
 
 function App() {
   return (
@@ -28,6 +29,8 @@ function App() {
           <Route path="/emergencyContact/text-page" element={<TextChatPage />} />
           <Route path="/emergencyContact/video-page" element={<VideoChatPage />} />
           <Route path="/pharmacy" element={<PharmacyPage />} />
+          <Route path="/wallet" element={<WalletPage />} />
+
           {/* Add other routes as needed */}
         </Routes>
       </div>
