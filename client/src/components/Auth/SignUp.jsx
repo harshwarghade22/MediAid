@@ -1,8 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUser, FaEnvelope, FaLock, FaGoogle, FaFacebook, FaPhone } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { clearErrors, register } from '../../actions/projectAction';
+import { toast } from 'react-toastify';
 
 const SignUp = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { loading, error, isAuthenticated } = useSelector((state) => state.auth);
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -12,9 +21,36 @@ const SignUp = () => {
     agreeToTerms: false,
   });
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+
+    if (error) {
+      toast.error(error);
+      dispatch(clearErrors());
+    }
+  }, [dispatch, isAuthenticated, error, navigate]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle sign up logic
+
+    if (formData.password !== formData.confirmPassword) {
+      return toast.error('Passwords do not match');
+    }
+
+    if (!formData.agreeToTerms) {
+      return toast.error('Please agree to the Terms and Conditions');
+    }
+
+    const userData = {
+      name: formData.fullName,
+      email: formData.email,
+      phone: formData.phone,
+      password: formData.password,
+    };
+
+    dispatch(register(userData));
   };
 
   return (
