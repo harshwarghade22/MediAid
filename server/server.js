@@ -7,20 +7,19 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const doctorRoutes = require("./routes/doctorRoutes");
 const pharmacyRoutes = require("./routes/pharmacyRoutes");
-
+const emailRoutes = require("./routes/emailRoutes");
 dotenv.config();
 connectDB();
 
 const app = express();
-
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors({ 
     origin: "*", 
     methods: ["GET", "POST", "PUT", "DELETE"], 
     allowedHeaders: ["Content-Type", "Authorization"] 
 }));
-
 // Default Route
 app.get("/", (req, res) => {
     res.send("Welcome to MediAid Backend 🚑");
@@ -30,7 +29,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);        // Authentication
 app.use("/api/doctors", doctorRoutes);    // Doctor Profiles & Appointments
 app.use("/api/pharmacies", pharmacyRoutes); // Pharmacy Listings & Emergency Services
-
+app.use("/api", emailRoutes);
 // Handle Undefined Routes
 app.use((req, res) => {
     res.status(404).json({ error: "API route not found" });
