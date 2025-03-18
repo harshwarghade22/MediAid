@@ -103,7 +103,7 @@ const Navbar = () => {
     return (
       <div className="flex space-x-4">
         <Link
-          to="/login"
+          to="/signin"
           className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
         >
           Login
