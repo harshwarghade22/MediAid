@@ -140,6 +140,7 @@ const Navbar = () => {
             <NavLink to="/doctors">Doctors</NavLink>
             <NavLink to="/pharmacy">Pharmacy</NavLink>
             <NavLink to="/about">About</NavLink>
+            <NavLink to="/wallet">Wallet</NavLink>
             
             {/* Auth Button */}
             <div className="flex items-center">
