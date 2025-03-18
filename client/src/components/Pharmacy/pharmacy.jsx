@@ -1,16 +1,32 @@
-import React, { useState } from 'react';
-import { Search, MapPin, Phone, Clock, Star, ShoppingBag, Filter } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { 
+  Search, 
+  MapPin, 
+  Phone, 
+  Clock, 
+  Star, 
+  ShoppingBag, 
+  Filter, 
+  X 
+} from 'lucide-react';
 
 const PharmacyPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('nearby');
-  
+  const [filters, setFilters] = useState({
+    emergency: false,
+    delivery: false,
+    highestRated: false,
+    nearestFirst: false
+  });
+  const [showFilterModal, setShowFilterModal] = useState(false);
+
   // Mock data for pharmacies
   const pharmacies = [
     {
       id: 1,
       name: "LifeCare Pharmacy",
-      distance: "0.8 km",
+      distance: 0.8,
       address: "123 Main Street, Downtown",
       phone: "+1 555-123-4567",
       rating: 4.8,
@@ -21,7 +37,7 @@ const PharmacyPage = () => {
     {
       id: 2,
       name: "MediPlus Drugstore",
-      distance: "1.2 km",
+      distance: 1.2,
       address: "456 Oak Avenue, Westside",
       phone: "+1 555-987-6543",
       rating: 4.5,
@@ -32,7 +48,7 @@ const PharmacyPage = () => {
     {
       id: 3,
       name: "QuickMeds Pharmacy",
-      distance: "2.5 km",
+      distance: 2.5,
       address: "789 Pine Road, Eastside",
       phone: "+1 555-567-8901",
       rating: 4.2,
@@ -51,7 +67,7 @@ const PharmacyPage = () => {
       category: "Emergency",
       prescription: false,
       inStock: true,
-      imageUrl: "/api/placeholder/80/80"
+      imageUrl: "https://via.placeholder.com/80"
     },
     {
       id: 2,
@@ -60,7 +76,7 @@ const PharmacyPage = () => {
       category: "Pain Relief",
       prescription: false,
       inStock: true,
-      imageUrl: "/api/placeholder/80/80"
+      imageUrl: "https://via.placeholder.com/80"
     },
     {
       id: 3,
@@ -69,7 +85,7 @@ const PharmacyPage = () => {
       category: "First Aid",
       prescription: false,
       inStock: true,
-      imageUrl: "/api/placeholder/80/80"
+      imageUrl: "https://via.placeholder.com/80"
     },
     {
       id: 4,
@@ -78,7 +94,7 @@ const PharmacyPage = () => {
       category: "Medical Devices",
       prescription: false,
       inStock: true,
-      imageUrl: "/api/placeholder/80/80"
+      imageUrl: "https://via.placeholder.com/80"
     },
     {
       id: 5,
@@ -87,20 +103,84 @@ const PharmacyPage = () => {
       category: "Emergency",
       prescription: true,
       inStock: true,
-      imageUrl: "/api/placeholder/80/80"
+      imageUrl: "https://via.placeholder.com/80"
     }
   ];
 
-  const filteredPharmacies = pharmacies.filter(pharmacy => 
-    pharmacy.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    pharmacy.address.toLowerCase().includes(searchQuery.toLowerCase())
+  // Advanced filtering function for pharmacies
+  const filteredPharmacies = useMemo(() => {
+    return pharmacies
+      .filter(pharmacy => 
+        pharmacy.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        pharmacy.address.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      .filter(pharmacy => !filters.emergency || pharmacy.isEmergency)
+      .filter(pharmacy => !filters.delivery || pharmacy.hasDelivery)
+      .sort((a, b) => {
+        if (filters.highestRated) return b.rating - a.rating;
+        if (filters.nearestFirst) return a.distance - b.distance;
+        return 0;
+      });
+  }, [pharmacies, searchQuery, filters]);
+
+  // Advanced filtering function for medications
+  const filteredMedications = useMemo(() => {
+    return medications
+      .filter(med => 
+        med.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        med.category.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+  }, [medications, searchQuery]);
+
+  // Filter modal component
+  const FilterModal = () => (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+      <div className="bg-white w-11/12 max-w-md rounded-2xl p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">Filter Pharmacies</h2>
+          <button onClick={() => setShowFilterModal(false)}>
+            <X className="h-6 w-6 text-gray-500" />
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          {[
+            { key: 'emergency', label: 'Emergency 24/7' },
+            { key: 'delivery', label: 'Delivery Available' },
+            { key: 'highestRated', label: 'Highest Rated' },
+            { key: 'nearestFirst', label: 'Nearest First' }
+          ].map(({ key, label }) => (
+            <div 
+              key={key} 
+              className="flex justify-between items-center"
+            >
+              <span>{label}</span>
+              <label className="switch">
+                <input
+                  type="checkbox"
+                  checked={filters[key]}
+                  onChange={() => setFilters(prev => ({
+                    ...prev,
+                    [key]: !prev[key]
+                  }))}
+                  className="hidden"
+                />
+                <span className={`slider ${filters[key] ? 'bg-blue-600' : 'bg-gray-300'}`}></span>
+              </label>
+            </div>
+          ))}
+        </div>
+
+        <button 
+          onClick={() => setShowFilterModal(false)}
+          className="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg"
+        >
+          Apply Filters
+        </button>
+      </div>
+    </div>
   );
-  
-  const filteredMedications = medications.filter(med => 
-    med.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    med.category.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-  
+
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       {/* Header */}
@@ -112,7 +192,7 @@ const PharmacyPage = () => {
       </header>
       
       {/* Search Bar */}
-      <div className="p-4 bg-white shadow-sm">
+      <div className="p-4 bg-white shadow-sm w-[70vw] mx-auto">
         <div className="relative">
           <input
             type="text"
@@ -126,7 +206,7 @@ const PharmacyPage = () => {
       </div>
       
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 bg-white">
+      <div className="flex border-b border-gray-200 bg-white w-[70vw] mx-auto">
         <button
           className={`flex-1 py-3 text-center font-medium ${activeTab === 'nearby' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`}
           onClick={() => setActiveTab('nearby')}
@@ -142,27 +222,43 @@ const PharmacyPage = () => {
       </div>
       
       {/* Content based on active tab */}
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto p-4 w-[70vw] mx-auto">
         {activeTab === 'nearby' ? (
           <>
             {/* Filter options */}
             <div className="flex items-center gap-2 mb-4 overflow-x-auto py-2">
-              <button className="flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm whitespace-nowrap">
+              <button 
+                onClick={() => setShowFilterModal(true)}
+                className={`flex items-center gap-1 px-3 py-1 rounded-full ${
+                  Object.values(filters).some(f => f)
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-blue-100 text-blue-700'
+                } text-sm whitespace-nowrap`}
+              >
                 <Filter className="h-4 w-4" />
                 <span>Filter</span>
               </button>
-              <button className="px-3 py-1 rounded-full bg-blue-600 text-white text-sm whitespace-nowrap">
-                Emergency 24/7
-              </button>
-              <button className="px-3 py-1 rounded-full bg-gray-200 text-gray-700 text-sm whitespace-nowrap">
-                Delivery Available
-              </button>
-              <button className="px-3 py-1 rounded-full bg-gray-200 text-gray-700 text-sm whitespace-nowrap">
-                Highest Rated
-              </button>
-              <button className="px-3 py-1 rounded-full bg-gray-200 text-gray-700 text-sm whitespace-nowrap">
-                Nearest First
-              </button>
+              
+              {/* Active Filters Chips */}
+              {Object.entries(filters)
+                .filter(([_, value]) => value)
+                .map(([key]) => {
+                  const labels = {
+                    emergency: 'Emergency 24/7',
+                    delivery: 'Delivery',
+                    highestRated: 'Highest Rated',
+                    nearestFirst: 'Nearest First'
+                  };
+                  return (
+                    <span 
+                      key={key}
+                      className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs"
+                    >
+                      {labels[key]}
+                    </span>
+                  );
+                })
+              }
             </div>
             
             {/* Pharmacy list */}
@@ -174,7 +270,7 @@ const PharmacyPage = () => {
                       <h3 className="font-semibold text-lg">{pharmacy.name}</h3>
                       <div className="flex items-center text-sm text-gray-600 mt-1">
                         <MapPin className="h-4 w-4 mr-1" />
-                        <span>{pharmacy.distance} • {pharmacy.address}</span>
+                        <span>{pharmacy.distance} km • {pharmacy.address}</span>
                       </div>
                       <div className="flex items-center text-sm text-gray-600 mt-1">
                         <Phone className="h-4 w-4 mr-1" />
@@ -299,6 +395,9 @@ const PharmacyPage = () => {
           <span className="text-xs text-gray-500 mt-1">Profile</span>
         </button>
       </nav>
+
+      {/* Filter Modal */}
+      {showFilterModal && <FilterModal />}
     </div>
   );
 };
