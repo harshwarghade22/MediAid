@@ -1,30 +1,12 @@
-// const express = require("express");
-// const dotenv = require("dotenv");
-// const cors = require("cors");
-// const connectDB = require("./config/db");
-// const authRoutes = require("./routes/authRoutes");
-
-// dotenv.config();
-// connectDB();
-
-// const app = express();
-// app.use(express.json());
-// app.use(cors());
-
-// app.use("/api/auth", authRoutes);
-
-
-// // Handle Preflight Requests (OPTIONS)
-// app.options("*", cors()); // <-- Add this line here
-// const PORT = process.env.PORT || 5000;
-// app.listen(PORT, () => console.log(`Server running on port ${PORT} 🚀`));
-
-
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
+
+// Import Routes
 const authRoutes = require("./routes/authRoutes");
+const doctorRoutes = require("./routes/doctorRoutes");
+const pharmacyRoutes = require("./routes/pharmacyRoutes");
 
 dotenv.config();
 connectDB();
@@ -33,20 +15,33 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-
-// CORS Configuration
-app.use(cors({
-  origin: "http://localhost:5173", // Frontend URL
-  credentials: true, // Allow cookies, authentication headers, and sessions
-  methods: "GET, POST, PUT, DELETE, OPTIONS",
-  allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+app.use(cors({ 
+    origin: "*", 
+    methods: ["GET", "POST", "PUT", "DELETE"], 
+    allowedHeaders: ["Content-Type", "Authorization"] 
 }));
 
-// Handle Preflight Requests (OPTIONS)
-app.options("*", cors());
+// Default Route
+app.get("/", (req, res) => {
+    res.send("Welcome to MediAid Backend 🚑");
+});
 
-// Routes
-app.use("/api/auth", authRoutes);
+// API Routes
+app.use("/api/auth", authRoutes);        // Authentication
+app.use("/api/doctors", doctorRoutes);    // Doctor Profiles & Appointments
+app.use("/api/pharmacies", pharmacyRoutes); // Pharmacy Listings & Emergency Services
 
+// Handle Undefined Routes
+app.use((req, res) => {
+    res.status(404).json({ error: "API route not found" });
+});
+
+// Global Error Handling Middleware
+app.use((err, req, res, next) => {
+    console.error("Server Error:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+});
+
+// Start Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT} 🚀`));
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
