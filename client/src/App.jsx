@@ -11,7 +11,7 @@ import EmergencyContact from './components/Doctors/EmergencyContact';
 import TextChatPage from './components/Doctors/TextChatPage';
 import VideoChatPage from './components/Doctors/VideoChatPage';
 import PharmacyPage from './components/Pharmacy/pharmacy';
-
+import AboutPage from './components/about';
 function App() {
   return (
     <Router>
@@ -28,6 +28,8 @@ function App() {
           <Route path="/emergencyContact/text-page" element={<TextChatPage />} />
           <Route path="/emergencyContact/video-page" element={<VideoChatPage />} />
           <Route path="/pharmacy" element={<PharmacyPage />} />
+          <Route path="/about" element={<AboutPage/>} />
+
           {/* Add other routes as needed */}
         </Routes>
       </div>
