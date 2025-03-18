@@ -4,6 +4,8 @@ import Navbar from './components/NavBar';
 import Home from './components/Pages/Home';
 import SignIn from './components/Auth/SignIn';
 import SignUp from './components/Auth/SignUp';
+import EmergencyButton from './components/Emergency/EmergencyButton';
+import DoctorsList from './components/Doctors/DoctorsList';
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/emergency" element={<EmergencyButton />} />
+          <Route path="/doctors" element={<DoctorsList />} />
           {/* Add other routes as needed */}
         </Routes>
       </div>
