@@ -1,16 +1,22 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FaEnvelope, FaLock, FaGoogle, FaApple } from 'react-icons/fa';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { FaEnvelope, FaLock, FaGoogle, FaApple } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { login } from "../../actions/projectAction";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
+
+  const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     // Handle login logic here
+    dispatch(login(formData.email, formData.password));
   };
 
   return (
@@ -40,7 +46,9 @@ const SignIn = () => {
                   className="appearance-none rounded-lg relative block w-full px-3 py-3 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out"
                   placeholder="Email address"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -58,7 +66,9 @@ const SignIn = () => {
                   className="appearance-none rounded-lg relative block w-full px-3 py-3 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out"
                   placeholder="Password"
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -72,14 +82,17 @@ const SignIn = () => {
                 type="checkbox"
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label htmlFor="remember_me" className="ml-2 block text-sm text-gray-900">
+              <label
+                htmlFor="remember_me"
+                className="ml-2 block text-sm text-gray-900"
+              >
                 Remember me
               </label>
             </div>
 
             <div className="text-sm">
-              <Link 
-                to="/forgot-password" 
+              <Link
+                to="/forgot-password"
                 className="font-medium text-blue-600 hover:text-blue-500 transition duration-300"
               >
                 Forgot password?
@@ -110,15 +123,11 @@ const SignIn = () => {
           </div>
 
           <div className="mt-6 grid grid-cols-2 gap-3">
-            <button
-              className="w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-300 ease-in-out"
-            >
+            <button className="w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-300 ease-in-out">
               <FaGoogle className="h-5 w-5 text-red-500 mr-2" />
               Google
             </button>
-            <button
-              className="w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-300 ease-in-out"
-            >
+            <button className="w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-300 ease-in-out">
               <FaApple className="h-5 w-5 text-black mr-2" />
               Apple
             </button>
@@ -126,9 +135,9 @@ const SignIn = () => {
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
-              <Link 
-                to="/signup" 
+              Don't have an account?{" "}
+              <Link
+                to="/signup"
                 className="font-medium text-blue-600 hover:text-blue-500 transition duration-300"
               >
                 Sign up
