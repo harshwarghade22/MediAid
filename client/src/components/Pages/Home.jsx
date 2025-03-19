@@ -1,78 +1,6 @@
-// import React from 'react';
-// import { Link } from 'react-router-dom';
-// import { FaAmbulance, FaUserMd, FaClinicMedical, FaPills } from 'react-icons/fa';
-
-// const Home = () => {
-//   return (
-//     <div className="min-h-screen">
-//       {/* Hero Section */}
-//       <div className="bg-blue-50 pt-24 pb-16">
-//         <div className="max-w-7xl mx-auto px-4">
-//           <div className="text-center">
-//             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-//               Emergency Medical Assistance at Your Fingertips
-//             </h1>
-//             <p className="text-xl text-gray-600 mb-8">
-//               Get immediate medical help, connect with healthcare professionals, and access emergency resources 24/7.
-//             </p>
-//             <Link
-//               to="/emergency"
-//               className="bg-red-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-red-700 transition duration-300"
-//             >
-//               Request Emergency Help
-//             </Link>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Services Section */}
-//       <div className="py-16">
-//         <div className="max-w-7xl mx-auto px-4">
-//           <h2 className="text-3xl font-bold text-center mb-12">Our Services</h2>
-//           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-//             <ServiceCard
-//               icon={<FaAmbulance className="h-12 w-12" />}
-//               title="Ambulance Service"
-//               description="Quick ambulance dispatch to your location"
-//             />
-//             <ServiceCard
-//               icon={<FaUserMd className="h-12 w-12" />}
-//               title="Online Doctors"
-//               description="Connect with qualified medical professionals"
-//             />
-//             <ServiceCard
-//               icon={<FaClinicMedical className="h-12 w-12" />}
-//               title="Emergency Care"
-//               description="24/7 emergency medical assistance"
-//             />
-//             <ServiceCard
-//               icon={<FaPills className="h-12 w-12" />}
-//               title="Pharmacy"
-//               description="Quick access to essential medicines"
-//             />
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// const ServiceCard = ({ icon, title, description }) => {
-//   return (
-//     <div className="bg-white p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition duration-300">
-//       <div className="text-blue-600 flex justify-center mb-4">{icon}</div>
-//       <h3 className="text-xl font-semibold mb-2">{title}</h3>
-//       <p className="text-gray-600">{description}</p>
-//     </div>
-//   );
-// };
-
-// export default Home;
-
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaAmbulance, FaUserMd, FaClinicMedical, FaPills, FaArrowRight } from 'react-icons/fa';
+import { FaAmbulance, FaUserMd, FaClinicMedical, FaPills, FaArrowRight, FaMapMarkedAlt, FaPhoneAlt, FaHospital } from 'react-icons/fa';
 import EmergencyModal from '../Emergency/EmergencyModal';
 
 const Home = () => {
@@ -106,14 +34,6 @@ const Home = () => {
                             Get immediate medical help, connect with healthcare professionals, and access emergency resources 24/7.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            {/* <Link
-                                to="/emergency"
-                                className="inline-flex items-center px-8 py-4 rounded-full text-lg font-semibold bg-gradient-to-r from-red-500 to-red-600 text-white hover:shadow-lg hover:scale-105 transition-all duration-300"
-                            >
-                                Request Emergency Help
-                                <FaArrowRight className="ml-2" />
-                            </Link> */}
-
                             <button
                                 onClick={() => setIsEmergencyModalOpen(true)}
                                 className="inline-flex items-center px-8 py-4 rounded-full text-lg font-semibold bg-gradient-to-r from-red-500 to-red-600 text-white hover:shadow-lg hover:scale-105 transition-all duration-300"
@@ -170,6 +90,28 @@ const Home = () => {
                             description="Quick access to essential medicines with home delivery"
                             color="green"
                         />
+                    </div>
+                </div>
+            </div>
+
+            {/* New Emergency Actions Footer */}
+            <div className="py-16 bg-gradient-to-r from-blue-900 to-purple-900 text-white">
+                <div className="max-w-7xl mx-auto px-4">
+                    <h2 className="text-3xl font-bold text-center mb-12">Emergency Resources</h2>
+                    
+                    <div className="flex justify-center">
+                        <Link to="/ambulance-tracking" className="group max-w-md w-full">
+                            <div className="bg-white bg-opacity-10 p-8 rounded-2xl backdrop-blur-sm hover:bg-opacity-20 transition-all duration-300 flex flex-col items-center text-center h-full">
+                                <div className="p-4 rounded-full bg-red-500 text-white mb-6 group-hover:scale-110 transition-transform duration-300">
+                                    <FaAmbulance className="h-8 w-8" />
+                                </div>
+                                <h3 className="text-2xl font-semibold mb-4">Track Ambulances</h3>
+                                <p className="text-gray-200 mb-6">See available ambulances near your location in real-time</p>
+                                <button className="mt-auto inline-flex items-center px-6 py-3 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors">
+                                    Track Now <FaMapMarkedAlt className="ml-2" />
+                                </button>
+                            </div>
+                        </Link>
                     </div>
                 </div>
             </div>

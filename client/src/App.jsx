@@ -13,6 +13,7 @@ import TextChatPage from './components/Doctors/TextChatPage';
 import VideoChatPage from './components/Doctors/VideoChatPage';
 import PharmacyPage from './components/Pharmacy/pharmacy';
 import WalletPage from './components/WalletPage';
+import AmbulanceTracking from './components/Ambulance/AmbulanceTracking';
 import Chatbot from './components/Bot.jsx';
 import NotFound from './components/Pages/NotFound.jsx';
 import Profile from './components/User/Profile.jsx';
@@ -112,6 +113,7 @@ function App() {
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/blogs/:id" element={<BlogsDetail />} />
           <Route path="/pharmacy" element={<PharmacyPage />} />
+          <Route path="/ambulance-tracking" element={<AmbulanceTracking />} />
           
           {/* Auth Routes - Regular routes without GuestRoute wrapper */}
           <Route path="/signin" element={<SignIn />} />
