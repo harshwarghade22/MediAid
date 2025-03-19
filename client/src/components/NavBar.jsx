@@ -1,77 +1,19 @@
-// import React, { useState } from 'react';
-// import { Link } from 'react-router-dom';
-// import { FaUserMd, FaBars, FaTimes } from 'react-icons/fa';
-
-// const Navbar = () => {
-//   const [isOpen, setIsOpen] = useState(false);
-
-//   return (
-//     <nav className="bg-white shadow-lg fixed w-full z-50">
-//       <div className="max-w-7xl mx-auto px-4">
-//         <div className="flex justify-between h-16">
-//           <div className="flex items-center">
-//             <Link to="/" className="flex items-center">
-//               <FaUserMd className="h-8 w-8 text-blue-600" />
-//               <span className="ml-2 text-2xl font-bold text-gray-800">MediAid</span>
-//             </Link>
-//           </div>
-
-//           {/* Desktop Menu */}
-//           <div className="hidden md:flex items-center space-x-8">
-//             <Link to="/" className="text-gray-600 hover:text-blue-600">Home</Link>
-//             <Link to="/emergency" className="text-gray-600 hover:text-blue-600">Emergency</Link>
-//             <Link to="/doctors" className="text-gray-600 hover:text-blue-600">Doctors</Link>
-//             <Link to="/pharmacy" className="text-gray-600 hover:text-blue-600">Pharmacy</Link>
-//             <Link to="/about" className="text-gray-600 hover:text-blue-600">About</Link>
-//             <Link to="/login" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
-//               Login
-//             </Link>
-//           </div>
-
-//           {/* Mobile Menu Button */}
-//           <div className="md:hidden flex items-center">
-//             <button onClick={() => setIsOpen(!isOpen)} className="text-gray-600">
-//               {isOpen ? <FaTimes className="h-6 w-6" /> : <FaBars className="h-6 w-6" />}
-//             </button>
-//           </div>
-//         </div>
-
-//         {/* Mobile Menu */}
-//         {isOpen && (
-//           <div className="md:hidden">
-//             <div className="px-2 pt-2 pb-3 space-y-1">
-//               <Link to="/" className="block px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md">Home</Link>
-//               <Link to="/emergency" className="block px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md">Emergency</Link>
-//               <Link to="/doctors" className="block px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md">Doctors</Link>
-//               <Link to="/pharmacy" className="block px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md">Pharmacy</Link>
-//               <Link to="/about" className="block px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md">About</Link>
-//               <Link to="/login" className="block px-3 py-2 bg-blue-600 text-white rounded-md">Login</Link>
-//             </div>
-//           </div>
-//         )}
-//       </div>
-//     </nav>
-//   );
-// };
-
-// export default Navbar;
-
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { FaUserMd, FaBars, FaTimes, FaHeartbeat } from 'react-icons/fa';
+import { FaUserMd, FaBars, FaTimes, FaHeartbeat, FaUserCircle } from 'react-icons/fa';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../actions/projectAction';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
+  // Get authentication state from Redux
+  const { isAuthenticated, user } = useSelector(state => state.auth);
 
-  useEffect(() => {
-    // Check authentication status (e.g., from localStorage or context)
-    const token = localStorage.getItem('authToken');
-    setIsLoggedIn(!!token);
-
+  React.useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
@@ -80,23 +22,28 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = () => {
-    // Perform logout logic
-    localStorage.removeItem('authToken');
-    // Clear any other authentication-related data
-    setIsLoggedIn(false);
-    // Redirect to home or login page
+    dispatch(logout());
     navigate('/');
   };
 
   const AuthButton = () => {
-    if (isLoggedIn) {
+    if (isAuthenticated) {
       return (
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-600 transition-all duration-300"
-        >
-          Logout
-        </button>
+        <div className="flex items-center space-x-4">
+          <Link 
+            to="/profile"
+            className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 transition"
+          >
+            <FaUserCircle className="h-5 w-5" />
+            <span className="font-medium">{user?.fullName || 'Profile'}</span>
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-600 transition-all duration-300"
+          >
+            Logout
+          </button>
+        </div>
       );
     }
     
@@ -135,12 +82,56 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <NavLink to="/">Home</NavLink>
-            <NavLink to="/blogs">Blogs</NavLink>
-            <NavLink to="/doctors">Doctors</NavLink>
-            <NavLink to="/pharmacy">Pharmacy</NavLink>
-            <NavLink to="/about">About</NavLink>
-            <NavLink to="/wallet">Wallet</NavLink>
+            <NavLink 
+              to="/"
+              className={({ isActive }) => 
+                isActive ? "text-blue-600 font-medium" : "text-gray-600 hover:text-blue-600"
+              }
+            >
+              Home
+            </NavLink>
+            <NavLink 
+              to="/emergency"
+              className={({ isActive }) => 
+                isActive ? "text-blue-600 font-medium" : "text-gray-600 hover:text-blue-600"
+              }
+            >
+              Emergency
+            </NavLink>
+            <NavLink 
+              to="/doctors"
+              className={({ isActive }) => 
+                isActive ? "text-blue-600 font-medium" : "text-gray-600 hover:text-blue-600"
+              }
+            >
+              Doctors
+            </NavLink>
+            <NavLink 
+              to="/pharmacy"
+              className={({ isActive }) => 
+                isActive ? "text-blue-600 font-medium" : "text-gray-600 hover:text-blue-600"
+              }
+            >
+              Pharmacy
+            </NavLink>
+            <NavLink 
+              to="/about"
+              className={({ isActive }) => 
+                isActive ? "text-blue-600 font-medium" : "text-gray-600 hover:text-blue-600"
+              }
+            >
+              About
+            </NavLink>
+            {isAuthenticated && (
+              <NavLink 
+                to="/wallet"
+                className={({ isActive }) => 
+                  isActive ? "text-blue-600 font-medium" : "text-gray-600 hover:text-blue-600"
+                }
+              >
+                Wallet
+              </NavLink>
+            )}
             
             {/* Auth Button */}
             <div className="flex items-center">
@@ -166,24 +157,73 @@ const Navbar = () => {
           }`}
         >
           <div className="px-4 pt-2 pb-3 space-y-1">
-            <Link to="/" onClick={() => setIsOpen(false)}>Home</Link>
-            <Link to="/emergency" onClick={() => setIsOpen(false)}>Emergency</Link>
-            <Link to="/doctors" onClick={() => setIsOpen(false)}>Doctors</Link>
-            <Link to="/pharmacy" onClick={() => setIsOpen(false)}>Pharmacy</Link>
-            <Link to="/about" onClick={() => setIsOpen(false)}>About</Link>
+            <Link 
+              to="/" 
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md"
+            >
+              Home
+            </Link>
+            <Link 
+              to="/emergency" 
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md"
+            >
+              Emergency
+            </Link>
+            <Link 
+              to="/doctors" 
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md"
+            >
+              Doctors
+            </Link>
+            <Link 
+              to="/pharmacy" 
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md"
+            >
+              Pharmacy
+            </Link>
+            <Link 
+              to="/about" 
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md"
+            >
+              About
+            </Link>
+            
+            {isAuthenticated && (
+              <Link 
+                to="/wallet" 
+                onClick={() => setIsOpen(false)}
+                className="block px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md"
+              >
+                Wallet
+              </Link>
+            )}
             
             {/* Mobile Auth Buttons */}
             <div className="space-y-2 pt-2">
-              {isLoggedIn ? (
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    setIsOpen(false);
-                  }}
-                  className="w-full bg-red-500 text-white px-4 py-2 rounded-full"
-                >
-                  Logout
-                </button>
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    to="/profile"
+                    onClick={() => setIsOpen(false)}
+                    className="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-full"
+                  >
+                    Profile
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setIsOpen(false);
+                    }}
+                    className="w-full bg-red-500 text-white px-4 py-2 rounded-full"
+                  >
+                    Logout
+                  </button>
+                </>
               ) : (
                 <>
                   <Link
@@ -209,7 +249,5 @@ const Navbar = () => {
     </nav>
   );
 };
-
-// NavLink and MobileNavLink components remain the same as in previous implementation
 
 export default Navbar;
