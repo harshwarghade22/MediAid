@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { useSelector, useDispatch } from 'react-redux';
 import Navbar from './components/NavBar';
 import Home from './components/Pages/Home';
+import About from './components/Pages/About';
 import SignIn from './components/Auth/SignIn';
 import SignUp from './components/Auth/SignUp';
 import EmergencyButton from './components/Emergency/EmergencyButton';
@@ -108,6 +109,7 @@ function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
           <Route path="/emergency" element={<EmergencyButton />} />
           <Route path="/pharmacy" element={<PharmacyPage />} />
           <Route path="/ambulance-tracking" element={<AmbulanceTracking />} />
