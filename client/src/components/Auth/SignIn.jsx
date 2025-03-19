@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { FaEnvelope, FaLock, FaGoogle, FaApple } from "react-icons/fa";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { FaEnvelope, FaLock, FaGoogle, FaApple, FaExclamationCircle } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../actions/projectAction";
 
 const SignIn = () => {
@@ -9,13 +9,53 @@ const SignIn = () => {
     email: "",
     password: "",
   });
-
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { isAuthenticated, loading: authLoading, error: authError } = useSelector((state) => state.auth);
+
+  // Get the intended destination after login
+  const from = location.state?.from?.pathname || "/";
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      console.log("User authenticated, redirecting to:", from);
+      navigate(from);
+    }
+  }, [isAuthenticated, navigate, from]);
+
+  // Update local loading state based on auth loading
+  useEffect(() => {
+    setLoading(authLoading);
+  }, [authLoading]);
+
+  // Set error message from Redux state
+  useEffect(() => {
+    if (authError) {
+      setError(authError);
+    }
+  }, [authError]);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Handle login logic here
+    setError("");
+    
+    if (!formData.email || !formData.password) {
+      setError("Please enter both email and password");
+      return;
+    }
+    
     dispatch(login(formData.email, formData.password));
   };
 
@@ -30,6 +70,13 @@ const SignIn = () => {
             Sign in to continue to your account
           </p>
         </div>
+
+        {error && (
+          <div className="bg-red-50 text-red-500 p-3 rounded-lg flex items-center gap-2">
+            <FaExclamationCircle />
+            <span>{error}</span>
+          </div>
+        )}
 
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
@@ -46,9 +93,7 @@ const SignIn = () => {
                   className="appearance-none rounded-lg relative block w-full px-3 py-3 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out"
                   placeholder="Email address"
                   value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -66,9 +111,7 @@ const SignIn = () => {
                   className="appearance-none rounded-lg relative block w-full px-3 py-3 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out"
                   placeholder="Password"
                   value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -103,9 +146,12 @@ const SignIn = () => {
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-lg text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 ease-in-out transform hover:scale-105"
+              disabled={loading}
+              className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-lg text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 ease-in-out transform hover:scale-105 ${
+                loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
             >
-              Sign In
+              {loading ? "Signing In..." : "Sign In"}
             </button>
           </div>
         </form>
@@ -123,11 +169,17 @@ const SignIn = () => {
           </div>
 
           <div className="mt-6 grid grid-cols-2 gap-3">
-            <button className="w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-300 ease-in-out">
+            <button 
+              type="button"
+              className="w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-300 ease-in-out"
+            >
               <FaGoogle className="h-5 w-5 text-red-500 mr-2" />
               Google
             </button>
-            <button className="w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-300 ease-in-out">
+            <button 
+              type="button"
+              className="w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-300 ease-in-out"
+            >
               <FaApple className="h-5 w-5 text-black mr-2" />
               Apple
             </button>
