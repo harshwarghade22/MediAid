@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 const BlogsDetail = () => {
-    const { id } = useParams();
+    const {id} = useParams();
 
     // Dummy data for blog details
     const dummyBlogs = [

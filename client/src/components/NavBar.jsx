@@ -91,12 +91,12 @@ const Navbar = () => {
               Home
             </NavLink>
             <NavLink 
-              to="/emergency"
+              to="/blogs"
               className={({ isActive }) => 
                 isActive ? "text-blue-600 font-medium" : "text-gray-600 hover:text-blue-600"
               }
             >
-              Emergency
+              Blogs
             </NavLink>
             <NavLink 
               to="/doctors"

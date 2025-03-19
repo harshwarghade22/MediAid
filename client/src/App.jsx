@@ -109,7 +109,8 @@ function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Home />} />
-          <Route path="/emergency" element={<EmergencyButton />} />
+          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/blogs/:id" element={<BlogsDetail />} />
           <Route path="/pharmacy" element={<PharmacyPage />} />
           
           {/* Auth Routes - Regular routes without GuestRoute wrapper */}
@@ -127,22 +128,22 @@ function App() {
               <DoctorsList />
             </ProtectedRoute>
           } />
-          <Route path="/appointmentBooking" element={
+          <Route path="/appointmentBooking/:id" element={
             <ProtectedRoute>
               <AppointmentBooking />
             </ProtectedRoute>
           } />
-          <Route path="/emergencyContact" element={
+          <Route path="/emergencyContact/:id" element={
             <ProtectedRoute>
               <EmergencyContact />
             </ProtectedRoute>
           } />
-          <Route path="/emergencyContact/text-page" element={
+          <Route path="/emergencyContact/text-page/:id" element={
             <ProtectedRoute>
               <TextChatPage />
             </ProtectedRoute>
           } />
-          <Route path="/emergencyContact/video-page" element={
+          <Route path="/emergencyContact/video-page/:id" element={
             <ProtectedRoute>
               <VideoChatPage />
             </ProtectedRoute>
