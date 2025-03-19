@@ -136,7 +136,7 @@ const Navbar = () => {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
             <NavLink to="/">Home</NavLink>
-            <NavLink to="/emergency">Emergency</NavLink>
+            <NavLink to="/blogs">Blogs</NavLink>
             <NavLink to="/doctors">Doctors</NavLink>
             <NavLink to="/pharmacy">Pharmacy</NavLink>
             <NavLink to="/about">About</NavLink>

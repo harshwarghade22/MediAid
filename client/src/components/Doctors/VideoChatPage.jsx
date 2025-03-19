@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  FaMicrophone, 
-  FaMicrophoneSlash, 
-  FaVideo, 
-  FaVideoSlash, 
-  FaPhoneSlash, 
-  FaDesktop 
+import {
+  FaMicrophone,
+  FaMicrophoneSlash,
+  FaVideo,
+  FaVideoSlash,
+  FaPhoneSlash,
+  FaDesktop
 } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom'; // Assuming you're using react-router
+import { useNavigate, useParams } from 'react-router-dom'; // Assuming you're using react-router
 
 const VideoChatPage = () => {
   const navigate = useNavigate(); // For navigation after call ends
@@ -16,6 +16,10 @@ const VideoChatPage = () => {
   const [isScreenSharing, setIsScreenSharing] = useState(false);
   const [callStatus, setCallStatus] = useState('connecting'); // 'connecting', 'active', 'ended'
   const [remainingTime, setRemainingTime] = useState(30 * 60); // 30 minutes in seconds
+
+  const {id} = useParams()
+  // console.log(id);
+  const [doctor, setDoctor] = useState(null);
 
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
@@ -41,6 +45,21 @@ const VideoChatPage = () => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    const fetchDoctorDetails = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/doctors/${id}`);
+        const data = await response.json();
+        console.log('Doctor Details:', data);
+        setDoctor(data);
+      } catch (error) {
+        console.error('Error fetching doctor details:', error);
+      }
+    };
+
+    fetchDoctorDetails();
+  }, [id]);
 
   // Media stream setup
   useEffect(() => {
@@ -76,7 +95,7 @@ const VideoChatPage = () => {
     if (localStreamRef.current) {
       localStreamRef.current.getTracks().forEach(track => track.stop());
       localStreamRef.current = null;
-      
+
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = null;
       }
@@ -117,7 +136,7 @@ const VideoChatPage = () => {
         if (localStreamRef.current) {
           const videoTrack = screenStream.getVideoTracks()[0];
           const existingVideoTrack = localStreamRef.current.getVideoTracks()[0];
-          
+
           localStreamRef.current.removeTrack(existingVideoTrack);
           localStreamRef.current.addTrack(videoTrack);
 
@@ -132,11 +151,11 @@ const VideoChatPage = () => {
       } else {
         // Revert to camera
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        
+
         if (localStreamRef.current) {
           const videoTrack = stream.getVideoTracks()[0];
           const existingVideoTrack = localStreamRef.current.getVideoTracks()[0];
-          
+
           localStreamRef.current.removeTrack(existingVideoTrack);
           localStreamRef.current.addTrack(videoTrack);
 
@@ -156,7 +175,7 @@ const VideoChatPage = () => {
   const endCall = () => {
     // Stop media stream
     stopMediaStream();
-    
+
     // Clear timer
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -184,11 +203,11 @@ const VideoChatPage = () => {
         <div className="w-1/4 bg-gray-100 rounded-l-2xl p-4 border-r flex flex-col">
           <div className="flex-grow">
             <h2 className="text-xl font-bold mb-4">Video Consultation</h2>
-            
+
             <div className="space-y-4">
               <div className="bg-white p-4 rounded-lg shadow-md">
                 <h3 className="font-semibold mb-2">Doctor Details</h3>
-                <p>Dr. Michael Chen</p>
+                <p>{doctor && `With  ${doctor.name}`}</p>
                 <p className="text-sm text-gray-600">Neurologist</p>
               </div>
 
@@ -201,7 +220,7 @@ const VideoChatPage = () => {
           </div>
 
           <div className="mt-4 space-y-2">
-            <button 
+            <button
               className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600"
               onClick={endCall}
               disabled={callStatus === 'ended'}
@@ -217,8 +236,8 @@ const VideoChatPage = () => {
           {callStatus !== 'active' && (
             <div className="absolute inset-0 z-50 bg-black bg-opacity-70 flex items-center justify-center">
               <p className="text-white text-2xl">
-                {callStatus === 'connecting' 
-                  ? 'Connecting...' 
+                {callStatus === 'connecting'
+                  ? 'Connecting...'
                   : 'Call Ended'}
               </p>
             </div>
@@ -226,63 +245,60 @@ const VideoChatPage = () => {
 
           {/* Remote Video */}
           <div className="absolute inset-0 bg-black">
-            <video 
+            <video
               ref={remoteVideoRef}
               className="w-full h-full object-cover"
-              autoPlay 
+              autoPlay
               placeholder="Waiting for doctor to join..."
             />
           </div>
 
           {/* Local Video Preview */}
           <div className="absolute bottom-4 right-4 w-1/4 border-4 border-white rounded-lg overflow-hidden shadow-lg">
-            <video 
+            <video
               ref={localVideoRef}
               className="w-full h-full object-cover"
-              autoPlay 
+              autoPlay
               muted
             />
           </div>
 
           {/* Control Buttons */}
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-4">
-            <button 
+            <button
               onClick={toggleMicrophone}
-              className={`p-3 rounded-full ${
-                isMicMuted 
-                  ? 'bg-red-500 text-white' 
+              className={`p-3 rounded-full ${isMicMuted
+                  ? 'bg-red-500 text-white'
                   : 'bg-white text-gray-700'
-              }`}
+                }`}
               disabled={callStatus !== 'active'}
             >
               {isMicMuted ? <FaMicrophoneSlash /> : <FaMicrophone />}
             </button>
 
-            <button 
+            <button
               onClick={toggleCamera}
-              className={`p-3 rounded-full ${
-                isCameraOff 
-                  ? 'bg-red-500 text-white' 
+              className={`p-3 rounded-full ${isCameraOff
+                  ? 'bg-red-500 text-white'
                   : 'bg-white text-gray-700'
-              }`}
+                }`}
               disabled={callStatus !== 'active'}
             >
               {isCameraOff ? <FaVideoSlash /> : <FaVideo />}
             </button>
 
-            <button 
+            <button
               onClick={toggleScreenShare}
-              className={`p-3 rounded-full ${
-                isScreenSharing 
-                  ? 'bg-blue-500 text-white' 
+              className={`p-3 rounded-full ${isScreenSharing
+                  ? 'bg-blue-500 text-white'
                   : 'bg-white text-gray-700'
-              }`}
+                }`}
               disabled={callStatus !== 'active'}
             >
               <FaDesktop />
             </button>
 
-            <button 
+            <button
               onClick={endCall}
               className="p-3 bg-red-500 text-white rounded-full"
             >

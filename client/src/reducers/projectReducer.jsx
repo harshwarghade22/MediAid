@@ -1,4 +1,4 @@
-import { CLEAR_ERRORS, LOGIN_FAIL, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT, REGISTER_FAIL, REGISTER_REQUEST, REGISTER_SUCCESS } from "../constants/projectConstant";
+import { CLEAR_ERRORS, FETCH_DOCTORS_FAIL, FETCH_DOCTORS_REQUEST, FETCH_DOCTORS_SUCCESS, FILTER_DOCTORS, LOGIN_FAIL, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT, REGISTER_FAIL, REGISTER_REQUEST, REGISTER_SUCCESS } from "../constants/projectConstant";
 
 const initialState = {
     user: null,
@@ -50,6 +50,51 @@ const initialState = {
           error: null,
         };
   
+      default:
+        return state;
+    }
+  };
+
+  
+  
+  const initialState2 = {
+    doctors: [],
+    loading: false,
+    error: null,
+    filters: {
+      searchTerm: '',
+      specialty: '',
+      rating: 0,
+    },
+  };
+  
+  export const doctorReducer = (state = initialState2, action) => {
+    switch (action.type) {
+      case FETCH_DOCTORS_REQUEST:
+        return {
+          ...state,
+          loading: true,
+        };
+      case FETCH_DOCTORS_SUCCESS:
+        return {
+          ...state,
+          loading: false,
+          doctors: action.payload,
+        };
+      case FETCH_DOCTORS_FAIL:
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+        };
+      case FILTER_DOCTORS:
+        return {
+          ...state,
+          filters: {
+            ...state.filters,
+            ...action.payload,
+          },
+        };
       default:
         return state;
     }

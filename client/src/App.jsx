@@ -12,6 +12,8 @@ import TextChatPage from './components/Doctors/TextChatPage';
 import VideoChatPage from './components/Doctors/VideoChatPage';
 import PharmacyPage from './components/Pharmacy/pharmacy';
 import WalletPage from './components/WalletPage';
+import Blogs from './components/Blogs/Blogs';
+import BlogsDetail from './components/Blogs/BlogsDetail';
 
 function App() {
   return (
@@ -22,12 +24,13 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/emergency" element={<EmergencyButton />} />
+          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/blog/:id" element={<BlogsDetail />} />
           <Route path="/doctors" element={<DoctorsList />} />
-          <Route path="/appointmentBooking" element={<AppointmentBooking />} />
-          <Route path="/emergencyContact" element={<EmergencyContact />} />
-          <Route path="/emergencyContact/text-page" element={<TextChatPage />} />
-          <Route path="/emergencyContact/video-page" element={<VideoChatPage />} />
+          <Route path="/appointmentBooking/:id" element={<AppointmentBooking />} />
+          <Route path="/emergencyContact/:id" element={<EmergencyContact />} />
+          <Route path="/emergencyContact/text-page/:id" element={<TextChatPage />} />
+          <Route path="/emergencyContact/video-page/:id" element={<VideoChatPage />} />
           <Route path="/pharmacy" element={<PharmacyPage />} />
           <Route path="/wallet" element={<WalletPage />} />
 

@@ -79,6 +79,10 @@
 import axios from "axios";
 import {
   CLEAR_ERRORS,
+  FETCH_DOCTORS_FAIL,
+  FETCH_DOCTORS_REQUEST,
+  FETCH_DOCTORS_SUCCESS,
+  FILTER_DOCTORS,
   LOGIN_FAIL,
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
@@ -150,3 +154,33 @@ export const logout = () => async (dispatch) => {
 export const clearErrors = () => async (dispatch) => {
   dispatch({ type: CLEAR_ERRORS });
 };
+
+
+
+
+// Action to fetch all doctors
+export const fetchDoctors = () => async (dispatch) => {
+  try {
+    dispatch({ type: FETCH_DOCTORS_REQUEST });
+
+    const { data } = await axios.get('http://localhost:5000/api/doctors/all');
+
+    dispatch({
+      type: FETCH_DOCTORS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: FETCH_DOCTORS_FAIL,
+      payload: error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message,
+    });
+  }
+};
+
+// Action to filter doctors
+export const filterDoctors = (filters) => ({
+  type: FILTER_DOCTORS,
+  payload: filters,
+});

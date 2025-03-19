@@ -8,6 +8,7 @@ const authRoutes = require("./routes/authRoutes");
 const doctorRoutes = require("./routes/doctorRoutes");
 const pharmacyRoutes = require("./routes/pharmacyRoutes");
 const emailRoutes = require("./routes/emailRoutes");
+const sosRoutes = require("./routes/sosRoutes");
 dotenv.config();
 connectDB();
 
@@ -32,6 +33,7 @@ app.use("/api/auth", authRoutes);        // Authentication
 app.use("/api/doctors", doctorRoutes);    // Doctor Profiles & Appointments
 app.use("/api/pharmacies", pharmacyRoutes); // Pharmacy Listings & Emergency Services
 app.use("/api", emailRoutes);
+app.use("/api/sos", sosRoutes);           // SOS Messages
 // Handle Undefined Routes
 app.use((req, res) => {
     res.status(404).json({ error: "API route not found" });

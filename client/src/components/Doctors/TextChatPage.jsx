@@ -7,6 +7,7 @@ import {
   FaClipboard, 
   FaFileUpload 
 } from 'react-icons/fa';
+import { useParams } from 'react-router-dom';
 
 const TextChatPage = () => {
   const [messages, setMessages] = useState([
@@ -19,6 +20,10 @@ const TextChatPage = () => {
   ]);
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef(null);
+  const {id} = useParams()
+  console.log(id);
+  const [doctor, setDoctor] = useState(null);
+  
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -50,6 +55,21 @@ const TextChatPage = () => {
     }
   };
 
+  useEffect(() => {
+      const fetchDoctorDetails = async () => {
+        try {
+          const response = await fetch(`http://localhost:5000/api/doctors/${id}`);
+          const data = await response.json();
+          console.log('Doctor Details:', data);
+          setDoctor(data);
+        } catch (error) {
+          console.error('Error fetching doctor details:', error);
+        }
+      };
+      
+      fetchDoctorDetails();
+    }, [id]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-6">
       <div className="bg-white w-full max-w-4xl h-[800px] rounded-2xl shadow-2xl flex">
@@ -58,7 +78,7 @@ const TextChatPage = () => {
           <div className="flex items-center mb-6">
             <FaUserMd className="text-blue-500 mr-3 h-10 w-10" />
             <div>
-              <h2 className="text-xl font-bold">Dr. Emily Rodriguez</h2>
+              <h2 className="text-xl font-bold">Text chat {doctor && `With  ${doctor.name}`}</h2>
               <p className="text-sm text-green-500">Online</p>
             </div>
           </div>
